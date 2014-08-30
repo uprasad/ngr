@@ -1,0 +1,182 @@
+<html>
+	<head>
+		<title> NGR </title>
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+	</head>
+	<body>
+		<script type="text/javascript">
+			function updateSlider(value, tag_id) {
+				document.getElementById(tag_id).value = value;
+			}
+		</script>
+
+		<!-- Header of the page, including the logo, the search box and the site navigation tabs -->
+		<table class="header">
+			<tbody>
+				<tr>
+					<td> NGR </td>
+					<td> <input class="search_box" type="text" placeholder="Quick Search"> </td>
+					<td>
+						<div class="tabs">
+							<ul class="tab_list">
+								<li> <a href="/"> Home </a> </li>
+								<li> <a href="/about"> About </a> </li>
+								<li> <a href="/contact"> Contact </a> </li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- Main body of the page, which consists mainly of the filters, and the results display -->
+		<div class="main_body">
+			<table class="container" id="container" onchange="updateResults(this)">
+				<tbody>
+					<tr>
+
+					<!-- Filter section -->
+						<td>
+							<div class="filter">
+								<div class="filter_heading"> Filter laptops </div>
+							</div>
+
+							<!-- Manufacturer -->
+							<fieldset>
+								<legend> Manufacturer </legend>
+								<label> <input type="checkbox" name="manufacturer" value="lenovo"/> Lenovo <br/> </label>
+								<label> <input type="checkbox" name="manufacturer" value="dell"/> Dell <br/> </label>
+								<label> <input type="checkbox" name="manufacturer" value="hp"/> HP <br/> </label>
+								<label> <input type="checkbox" name="manufacturer" value="apple"/> Apple <br/> </label>
+							</fieldset>
+
+							<!-- Display Resolution -->
+							<fieldset>
+								<legend> Display Resolution </legend>
+								<label> <input type="checkbox" name="display_res" value="1366 x 768"/> 1366 x 768 <br/> </label>
+								<label> <input type="checkbox" name="display_res" value="1280 x 800"/> 1280 x 800 <br/> </label>
+								<label> <input type="checkbox" name="display_res" value="1920 x 1080"/> 1920 x 1080 <br/> </label>
+								<label> <input type="checkbox" name="display_res" value="1920 x 1200"/> 1920 x 1200 <br/> </label>
+								<label> <input type="checkbox" name="display_res" value="greater"/> Greater <br/> </label>
+							</fieldset>
+
+							<!-- RAM -->
+							<fieldset>
+								<legend> Minimum RAM </legend>
+								<output id="ram_output"> 2 </output>
+								<input id="min_ram" type="range" min="0" max="16" value="2" oninput="updateSlider(value, 'ram_output')" /> GB
+							</fieldset>
+
+							<!-- Battery Life -->
+							<fieldset>
+								<legend> Minimum Battery Life </legend>
+								<output id="battery_output"> 0 </output>
+								<input id="min_battery" type="range" min="0" max="10" value="0" oninput="updateSlider(value, 'battery_output')" /> Hours
+							</fieldset>
+						</td>
+
+						<!-- Results Section -->
+						<td>
+							<table>
+								<thead>
+									<tr>
+										<th> Laptop </th>
+										<th> Price </th>
+									</tr>
+								</thead>
+								<tbody id="results_table">
+								</tbody>
+							</table>
+						</td>
+
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<script type="text/javascript">
+			function updateResults() {
+				var manufacturer = document.getElementsByName("manufacturer");
+				var display_res = document.getElementsByName("display_res");
+
+				var manufacturer_list = [];
+				var display_res_list = [];
+
+				for (var i=0; i<manufacturer.length; ++i) {
+					if (manufacturer[i].checked)
+						manufacturer_list.push(manufacturer[i].value);
+				}
+
+				for (i=0; i<display_res.length; ++i) {
+					if (display_res[i].checked)
+						display_res_list.push(display_res[i].value);
+				}
+
+				var min_ram = document.getElementById("min_ram").value;
+				var min_battery = document.getElementById("min_battery").value * 60; // battery life in minutes
+
+				//alert(min_ram + " " + min_battery);
+
+				var API_KEY = "rycx7478fv7jq5fa8e34zs9v";
+
+				//console.log(display_res_list.length);
+				//console.log(manufacturer_list.length);
+				var search_string = "(class=mobile computing*";
+
+				if (manufacturer_list.length) {
+					search_string += "&("
+					for (i=0; i<manufacturer_list.length; ++i) {
+						search_string += "search=" + manufacturer_list[i] + "|";
+					}
+					search_string = search_string.substr(0, search_string.length-1) + ")";
+				}
+
+				if (display_res_list.length) {
+					search_string += "&(";
+					for (i=0; i<display_res_list.length; ++i) {
+						search_string += "search=" + display_res_list[i] + "|";
+					}
+					search_string = search_string.substr(0, search_string.length-1) + ")";
+				}
+
+				search_string += ")";
+				search_string += "?show=name,salePrice&sort=salesRankMediumTerm&format=json&apiKey=" + API_KEY;
+
+				//console.log(search_string);
+
+				var script = document.createElement("script");
+				script.type = "text/javascript";
+				script.src = "http://api.remix.bestbuy.com/v1/products" + search_string + "&callback=myCallback";
+
+				//console.log(script.src);
+
+				document.getElementsByTagName("head")[0].appendChild(script);
+			}
+
+			function myCallback(data) {
+				var tableBody = document.getElementById("results_table");
+				var products = data.products;
+				//console.log(products);
+
+				var newTableBody = document.createElement("tbody");
+				newTableBody.id = "results_table";
+
+				for (var i=0; i<products.length; ++i) {
+					var tr = document.createElement("tr");
+
+					var td = document.createElement("td");
+					td.appendChild(document.createTextNode(products[i].name));
+					tr.appendChild(td);
+
+					td = document.createElement("td");
+					td.appendChild(document.createTextNode(products[i].salePrice));
+					tr.appendChild(td);
+
+					newTableBody.appendChild(tr);
+				}
+
+				tableBody.parentNode.replaceChild(newTableBody, tableBody);
+			}
+		</script>
+	</body>
+</html>
