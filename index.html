@@ -2,6 +2,7 @@
 	<head>
 		<title> NGR </title>
 		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
 	</head>
 	<body>
 		<script type="text/javascript">
@@ -31,12 +32,13 @@
 
 		<!-- Main body of the page, which consists mainly of the filters, and the results display -->
 		<div class="main_body">
-			<table class="container" id="container" onchange="updateResults(this)">
+			<table class="container" id="container" onchange="updateResults('myCallback')">
 				<tbody>
 					<tr>
 
 					<!-- Filter section -->
-						<td>
+						<td id="filter_td">
+						<div id="filter_wrapper">
 							<div class="filter">
 								<div class="filter_heading"> Filter laptops </div>
 							</div>
@@ -73,10 +75,12 @@
 								<output id="battery_output"> 0 </output>
 								<input id="min_battery" type="range" min="0" max="10" value="0" oninput="updateSlider(value, 'battery_output')" /> Hours
 							</fieldset>
+						</div>
 						</td>
 
 						<!-- Results Section -->
-						<td>
+						<td id="results_td">
+						<div id="results_wrapper">
 							<table>
 								<thead>
 									<tr>
@@ -87,15 +91,23 @@
 								<tbody id="results_table">
 								</tbody>
 							</table>
+						</div>
 						</td>
-
 					</tr>
 				</tbody>
 			</table>
 		</div>
 
 		<script type="text/javascript">
-			function updateResults() {
+			document.getElementById("filter_td").style.marginTop = -1*document.getElementById("filter_td").offsetHeight/2;
+
+			page_params = {
+				"pageSize": 50,
+				"page": 1,
+				"sort": "salesRankMediumTerm"
+			};
+
+			function updateResults(callbackFn) {
 				var manufacturer = document.getElementsByName("manufacturer");
 				var display_res = document.getElementsByName("display_res");
 
@@ -114,13 +126,9 @@
 
 				var min_ram = document.getElementById("min_ram").value;
 				var min_battery = document.getElementById("min_battery").value * 60; // battery life in minutes
-
-				//alert(min_ram + " " + min_battery);
-
+				
 				var API_KEY = "rycx7478fv7jq5fa8e34zs9v";
 
-				//console.log(display_res_list.length);
-				//console.log(manufacturer_list.length);
 				var search_string = "(class=mobile computing*";
 
 				if (manufacturer_list.length) {
@@ -140,13 +148,21 @@
 				}
 
 				search_string += ")";
-				search_string += "?show=name,salePrice&sort=salesRankMediumTerm&format=json&apiKey=" + API_KEY;
+				search_string += "?show=name,salePrice";
+
+				for (var param in page_params) {
+					if (page_params.hasOwnProperty(param)) {
+						search_string += "&" + param + "=" + page_params[param];
+					}
+				}
+
+				search_string += "&format=json&apiKey=" + API_KEY;
 
 				//console.log(search_string);
 
 				var script = document.createElement("script");
 				script.type = "text/javascript";
-				script.src = "http://api.remix.bestbuy.com/v1/products" + search_string + "&callback=myCallback";
+				script.src = "http://api.remix.bestbuy.com/v1/products" + search_string + "&callback=" + callbackFn;
 
 				//console.log(script.src);
 
@@ -156,7 +172,12 @@
 			function myCallback(data) {
 				var tableBody = document.getElementById("results_table");
 				var products = data.products;
+				console.log(data);
 				//console.log(products);
+
+				var totalPages = data.totalPages;
+				if (page_params["page"] > totalPages + 1)
+					return;
 
 				var newTableBody = document.createElement("tbody");
 				newTableBody.id = "results_table";
