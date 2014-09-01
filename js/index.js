@@ -13,7 +13,7 @@ function updateResults(callbackFn) {
 		page_params["page"] += 1;
 	}
 
-	console.log(page_params["page"]);
+	//console.log(page_params["page"]);
 
 	var manufacturer = document.getElementsByName("manufacturer");
 	var display_res = document.getElementsByName("display_res");
@@ -55,7 +55,7 @@ function updateResults(callbackFn) {
 	}
 
 	search_string += ")";
-	search_string += "?show=name,salePrice";
+	search_string += "?show=all";
 
 	for (var param in page_params) {
 		if (page_params.hasOwnProperty(param)) {
@@ -71,7 +71,7 @@ function updateResults(callbackFn) {
 	script.type = "text/javascript";
 	script.src = "http://api.remix.bestbuy.com/v1/products" + search_string + "&callback=" + callbackFn;
 
-	console.log(script.src);
+	//console.log(script.src);
 
 	document.getElementsByTagName("head")[0].appendChild(script);
 }
@@ -79,7 +79,7 @@ function updateResults(callbackFn) {
 function myCallback(data) {
 	var tableBody = document.getElementById("results_table");
 	var products = data.products;
-	console.log(data);
+	//console.log(data);
 	//console.log(products);
 
 	var totalPages = data.totalPages;
@@ -93,11 +93,11 @@ function myCallback(data) {
 		var tr = document.createElement("tr");
 
 		var td = document.createElement("td");
-		td.appendChild(document.createTextNode(products[i].name));
+		td.appendChild(laptopBasic(products[i]));
 		tr.appendChild(td);
 
 		td = document.createElement("td");
-		td.appendChild(document.createTextNode(products[i].salePrice));
+		td.appendChild(laptopPrice(products[i]));
 		tr.appendChild(td);
 
 		newTableBody.appendChild(tr);
@@ -119,15 +119,24 @@ function appendCallback(data) {
 		var tr = document.createElement("tr");
 
 		var td = document.createElement("td");
-		td.appendChild(document.createTextNode(products[i].name));
+		td.appendChild(laptopBasic(products[i]));
 		tr.appendChild(td);
 
 		td = document.createElement("td");
-		td.appendChild(document.createTextNode(products[i].salePrice));
+		td.appendChild(laptopPrice(products[i]));
 		tr.appendChild(td);
 
 		tableBody.appendChild(tr);
 	}
+}
+
+function laptopBasic (product) {
+	console.log(product.manufacturer);
+	return document.createTextNode(product.manufacturer + " " + product.modelNumber);
+}
+
+function laptopPrice (product) {
+	return document.createTextNode(product.salePrice);
 }
 
 function appendRows() {
