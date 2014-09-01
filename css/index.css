@@ -2,8 +2,6 @@
 	display: inline;
 }
 
-#filter_td {
-	position: fixed;
-	right: 0%;
-	top: 50%;
+.main_table_td {
+	vertical-align: top;
 }
