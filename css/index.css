@@ -5,3 +5,8 @@
 .main_table_td {
 	vertical-align: top;
 }
+
+#results_table_table {
+	border-collapse: separate;
+	border-spacing: 2em 1em;
+}

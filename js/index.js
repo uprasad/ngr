@@ -76,19 +76,7 @@ function updateResults(callbackFn) {
 	document.getElementsByTagName("head")[0].appendChild(script);
 }
 
-function myCallback(data) {
-	var tableBody = document.getElementById("results_table");
-	var products = data.products;
-	//console.log(data);
-	//console.log(products);
-
-	var totalPages = data.totalPages;
-	if (page_params["page"] > totalPages + 1)
-		return;
-
-	var newTableBody = document.createElement("tbody");
-	newTableBody.id = "results_table";
-
+function populateRows(tableBody, products) {
 	for (var i=0; i<products.length; ++i) {
 		var tr = document.createElement("tr");
 
@@ -100,8 +88,23 @@ function myCallback(data) {
 		td.appendChild(laptopPrice(products[i]));
 		tr.appendChild(td);
 
-		newTableBody.appendChild(tr);
+		tr.className += " results_row";
+		tableBody.appendChild(tr);
 	}
+}
+
+function myCallback(data) {
+	var tableBody = document.getElementById("results_table");
+	var products = data.products;
+
+	var totalPages = data.totalPages;
+	if (page_params["page"] > totalPages + 1)
+		return;
+
+	var newTableBody = document.createElement("tbody");
+	newTableBody.id = "results_table";
+
+	populateRows(newTableBody, products);
 
 	tableBody.parentNode.replaceChild(newTableBody, tableBody);
 }
@@ -115,24 +118,27 @@ function appendCallback(data) {
 	if (page_params["page"] > totalPages + 1)
 		return;
 
-	for (var i=0; i<products.length; ++i) {
-		var tr = document.createElement("tr");
-
-		var td = document.createElement("td");
-		td.appendChild(laptopBasic(products[i]));
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		td.appendChild(laptopPrice(products[i]));
-		tr.appendChild(td);
-
-		tableBody.appendChild(tr);
-	}
+	populateRows(tableBody, products);
 }
 
 function laptopBasic (product) {
-	console.log(product.manufacturer);
-	return document.createTextNode(product.manufacturer + " " + product.modelNumber);
+	var basicDiv = document.createElement("div");
+	var splitName = product.name.split("-");
+	var laptopDescription = splitName[0] + "<br/>" + splitName[1] + "<br/>" + product.modelNumber;
+
+	var laptopImage = document.createElement("img");
+	laptopImage.src = product.image;
+	laptopImage.style.display = "block";
+	laptopImage.style.margin = "auto";
+
+	textDiv = document.createElement("div");
+	textDiv.innerHTML = laptopDescription;
+	textDiv.style.textAlign = "center";
+
+	basicDiv.appendChild(laptopImage);
+	basicDiv.appendChild(textDiv);
+
+	return basicDiv;
 }
 
 function laptopPrice (product) {

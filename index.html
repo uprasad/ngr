@@ -38,7 +38,6 @@
 
 					<!-- Filter section -->
 						<td id="filter_td" class="main_table_td">
-						<div id="filter_wrapper">
 							<div class="filter">
 								<div class="filter_heading"> Filter laptops </div>
 							</div>
@@ -75,13 +74,11 @@
 								<output id="battery_output"> 0 </output>
 								<input id="min_battery" type="range" min="0" max="10" value="0" oninput="updateSlider(value, 'battery_output')" /> Hours
 							</fieldset>
-						</div>
 						</td>
 
 						<!-- Results Section -->
 						<td id="results_td" class="main_table_td">
-						<div id="results_wrapper">
-							<table>
+							<table id="results_table_table">
 								<thead>
 									<tr>
 										<th> Laptop </th>
@@ -93,7 +90,6 @@
 								</tbody>
 							</table>
 							<input type="button" value="Load more results" onclick="appendRows()" />
-						</div>
 						</td>
 					</tr>
 				</tbody>
