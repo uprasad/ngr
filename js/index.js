@@ -151,6 +151,14 @@ function appendRows() {
 
 $(function() {
 	$("legend").click(function() {
+		var symbol = $.trim($(this).html()).substring(0, 3);
+		var fieldName = $.trim($(this).html()).substring(3);
+
+		if (symbol == "[+]")
+			$(this).html("[-]" + fieldName);
+		else
+			$(this).html("[+]" + fieldName);
+
 		$(this).parent().find(".filter_content").slideToggle("slow");
 	});
 });
