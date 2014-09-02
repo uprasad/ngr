@@ -45,34 +45,42 @@
 							<!-- Manufacturer -->
 							<fieldset>
 								<legend> Manufacturer </legend>
+								<div class="filter_content">
 								<label> <input type="checkbox" name="manufacturer" value="lenovo"/> Lenovo <br/> </label>
 								<label> <input type="checkbox" name="manufacturer" value="dell"/> Dell <br/> </label>
 								<label> <input type="checkbox" name="manufacturer" value="hp"/> HP <br/> </label>
 								<label> <input type="checkbox" name="manufacturer" value="apple"/> Apple <br/> </label>
+								</div>
 							</fieldset>
 
 							<!-- Display Resolution -->
 							<fieldset>
 								<legend> Display Resolution </legend>
+								<div class="filter_content">
 								<label> <input type="checkbox" name="display_res" value="1366 x 768"/> 1366 x 768 <br/> </label>
 								<label> <input type="checkbox" name="display_res" value="1280 x 800"/> 1280 x 800 <br/> </label>
 								<label> <input type="checkbox" name="display_res" value="1920 x 1080"/> 1920 x 1080 <br/> </label>
 								<label> <input type="checkbox" name="display_res" value="1920 x 1200"/> 1920 x 1200 <br/> </label>
 								<label> <input type="checkbox" name="display_res" value="greater"/> Greater <br/> </label>
+								</div>
 							</fieldset>
 
 							<!-- RAM -->
 							<fieldset>
 								<legend> Minimum RAM </legend>
+								<div class="filter_content">
 								<output id="ram_output"> 2 </output>
 								<input id="min_ram" type="range" min="0" max="16" value="2" oninput="updateSlider(value, 'ram_output')" /> GB
+								</div>
 							</fieldset>
 
 							<!-- Battery Life -->
 							<fieldset>
 								<legend> Minimum Battery Life </legend>
+								<div class="filter_content">
 								<output id="battery_output"> 0 </output>
 								<input id="min_battery" type="range" min="0" max="10" value="0" oninput="updateSlider(value, 'battery_output')" /> Hours
+								</div>
 							</fieldset>
 						</td>
 

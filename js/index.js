@@ -148,3 +148,9 @@ function laptopPrice (product) {
 function appendRows() {
 	updateResults("appendCallback");
 }
+
+$(function() {
+	$("legend").click(function() {
+		$(this).parent().find(".filter_content").slideToggle("slow");
+	});
+});

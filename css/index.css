@@ -10,3 +10,11 @@
 	border-collapse: separate;
 	border-spacing: 2em 1em;
 }
+
+fieldset .filter_content {
+	display: none;
+}
+
+legend {
+	cursor: pointer;
+}
