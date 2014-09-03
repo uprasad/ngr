@@ -150,7 +150,7 @@ function laptopSpecs(product) {
 
 	specsDiv.innerHTML = proc + "<br/>" + procSpeed + "<br/>" +
 		product.screenSizeIn + " " + product.displayType + "<br/>" + 
-		ram + ramType + "<br/>" + batteryType + "<br/>";
+		ram + " " + ramType + "<br/>" + batteryType + "<br/>";
 
 	return specsDiv;
 }
