@@ -76,23 +76,6 @@ function updateResults(callbackFn) {
 	document.getElementsByTagName("head")[0].appendChild(script);
 }
 
-function populateRows(tableBody, products) {
-	for (var i=0; i<products.length; ++i) {
-		var tr = document.createElement("tr");
-
-		var td = document.createElement("td");
-		td.appendChild(laptopBasic(products[i]));
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		td.appendChild(laptopPrice(products[i]));
-		tr.appendChild(td);
-
-		tr.className += " results_row";
-		tableBody.appendChild(tr);
-	}
-}
-
 function myCallback(data) {
 	var tableBody = document.getElementById("results_table");
 	var products = data.products;
@@ -121,7 +104,7 @@ function appendCallback(data) {
 	populateRows(tableBody, products);
 }
 
-function laptopBasic (product) {
+function laptopBasic(product) {
 	var basicDiv = document.createElement("div");
 	var splitName = product.name.split("-");
 	var laptopDescription = splitName[0] + "<br/>" + splitName[1] + "<br/>" + product.modelNumber;
@@ -141,8 +124,59 @@ function laptopBasic (product) {
 	return basicDiv;
 }
 
-function laptopPrice (product) {
+function laptopPrice(product) {
 	return document.createTextNode(product.salePrice);
+}
+
+function laptopSpecs(product) {
+	var details = product.details;
+	var specsDiv = document.createElement("div");
+
+	var proc, procSpeed, batteryType, ram, ramType;
+
+	for (var i=0; i<details.length; ++i) {
+		if (details[i].name == "Processor") {
+			proc = details[i].value;
+		} else if (details[i].name == "Processor Speed") {
+			procSpeed = details[i].value;
+		} else if (details[i].name == "System Memory (RAM)") {
+			ram = details[i].value;
+		} else if (details[i].name == "Type of Memory (RAM)") {
+			ramType = details[i].value;
+		} else if (details[i].name == "Battery Type") {
+			batteryType = details[i].value;
+		}
+	}
+
+	specsDiv.innerHTML = proc + "<br/>" + procSpeed + "<br/>" +
+		product.screenSizeIn + " " + product.displayType + "<br/>" + 
+		ram + ramType + "<br/>" + batteryType + "<br/>";
+
+	return specsDiv;
+}
+
+function populateRows(tableBody, products) {
+	for (var i=0; i<products.length; ++i) {
+		var tr = document.createElement("tr");
+
+		// Laptop basic details
+		var td = document.createElement("td");
+		td.appendChild(laptopBasic(products[i]));
+		tr.appendChild(td);
+
+		// Laptop price
+		td = document.createElement("td");
+		td.appendChild(laptopPrice(products[i]));
+		tr.appendChild(td);
+
+		// Laptop specs
+		td = document.createElement("td");
+		td.appendChild(laptopSpecs(products[i]));
+		tr.appendChild(td);
+
+		tr.className += " results_row";
+		tableBody.appendChild(tr);
+	}
 }
 
 function appendRows() {
